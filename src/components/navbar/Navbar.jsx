@@ -22,7 +22,7 @@ const Navbar = () => {
 
     // navList Data
     const navList = (
-        <ul className="flex text-white font-medium text-md px-5 ">
+        <ul className="flex  md:space-x-4 text-white font-medium text-md px-5 ">
             {/* Home */}
             <li className="  hover:bg-purple-300 btn btn-ghost ">
                 <Link to={'/'}>Home</Link>
@@ -44,7 +44,7 @@ const Navbar = () => {
             </li> : ""}
 
             {/* User */}
-            {user?.role === "user" && <li className="  hover:bg-purple-300 btn btn-ghost ">
+            {user?.role === "user" && <li className="  capitalize hover:bg-purple-300 btn btn-ghost ">
                 <Link to={'/user-dashboard'}>{user.name}</Link>
             </li>}
 
@@ -54,22 +54,22 @@ const Navbar = () => {
             </li>}
 
             {/* logout */}
-            {user && <li className="  hover:bg-purple-300  cursor-pointer btn btn-ghost btn-circle" onClick={logout}>
+            {user && <li className="  hover:bg-purple-300  cursor-pointer btn btn-ghost " onClick={logout}>
                 Logout
             </li>}
 
             {/* Cart */}
             <li>
                 <Link to={'/cart'}>
-                <div tabIndex={0} role="button" className="  hover:bg-purple-300 btn btn-ghost btn-circle">
+                <div tabIndex={0} role="button" className="  hover:bg-purple-300 btn btn-ghost ">
         <div className="flex-none">
     <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="  hover:bg-purple-300 btn btn-ghost btn-circle">
+      
         <div className="indicator">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
           <span className="badge badge-sm indicator-item">{cartItems.length}</span>
         </div>
-      </div>
+    
       </div>
       </div>
       </div>

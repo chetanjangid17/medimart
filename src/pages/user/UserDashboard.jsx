@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import myContext from "../../context/myContext";
 import Loader from "../../components/loader/Loader";
@@ -10,6 +11,14 @@ const UserDashboard = () => {
     const { loading, getAllOrder, addFeedback } = context;
     const [feedbackContentMap, setFeedbackContentMap] = useState({}); // Feedback content for each product
     const [isSubmitting, setIsSubmitting] = useState({}); // Submission status for each product
+    const navigate = useNavigate();
+
+
+   // logout function 
+   const logout = () => {
+    localStorage.clear('users');
+    navigate("/login")
+}
 
     // Function to handle feedback submission for a specific product
     const handleSubmitFeedback = async (e, productId) => {
@@ -48,7 +57,7 @@ const UserDashboard = () => {
                         {/* Text */}
                         <div className="">
                             {/* Name */}
-                            <h1 className="text-center text-lg">
+                            <h1 className="text-center text-lg capitalize">
                                 <span className="font-bold">Name : </span>
                                 {user?.name}
                             </h1>
@@ -69,7 +78,13 @@ const UserDashboard = () => {
                                 <span className="font-bold">Date : </span>
                                 {user?.date}
                             </h1>
-                            
+                           <div className="  mt-3 flex justify-center">
+
+                            {user && <button className="  hover:bg-purple-300 bg-red-600 cursor-pointer btn btn-ghost  items-center" onClick={logout}>
+                Logout
+            </button>}
+                           </div>
+                           
                             
                         </div>
                     </div>
@@ -94,16 +109,17 @@ const UserDashboard = () => {
                                     const { status } = order;
                                     const productId = id; // Assign product id
                                     return (
-                                        <div key={index} className="mt-5 flex flex-col overflow-hidden rounded-xl border border-pink-100 md:flex-row">
+                                        <div key={index} className="mt-5 flex flex-col  overflow-hidden rounded-xl border border-pink-100 md:flex-row">
                                             {/* Left */}
                                             <div className="w-full border-r border-pink-100 bg-pink-50 md:max-w-xs">
                                                 <div className="p-8">
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-1">
                                                         <div className="mb-4">
-                                                            <div className="text-sm font-semibold text-black">Order Id</div>
+                                                            <div className="text-sm font-semibold  text-black">Order Id</div>
                                                             <div className="text-sm font-medium text-gray-900">#{id}</div>
                                                         </div>
-
+                                                        <br/>
+                                                            
                                                         <div className="mb-4">
                                                             <div className="text-sm font-semibold">Date</div>
                                                             <div className="text-sm font-medium text-gray-900">{date}</div>
@@ -150,7 +166,7 @@ const UserDashboard = () => {
                                                                 <div className="mt-4">
                                                                     <form onSubmit={(e) => handleSubmitFeedback(e, productId)}>
                                                                         <textarea
-                                                                            className="w-full h-24 px-3 py-2 text-base placeholder-gray-500 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                                                            className="w-full h-12 px-3 py-2 text-base placeholder-gray-500 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                                                                             placeholder="Write your feedback here..."
                                                                             value={feedbackContentMap[productId] || ''}
                                                                             onChange={(e) => setFeedbackContentMap(prevState => ({ ...prevState, [productId]: e.target.value }))}
