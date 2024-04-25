@@ -17,7 +17,7 @@ const SearchBar = () => {
     return (
         <div className="">
             {/* search input  */}
-            <div className="input flex justify-center">
+            <div className="input flex justify-center   ">
                 <input
                     type="text"
                     placeholder='Search here'

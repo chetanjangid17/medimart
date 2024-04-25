@@ -8,7 +8,9 @@ import { useState } from "react";
 
 const BuyNowModal = ({ addressInfo, setAddressInfo, buyNowFunction }) => {
     const [open, setOpen] = useState(false);
+    // const user = JSON.parse(localStorage.getItem('users'));
 
+    // const context = useContext(myContext);
     const handleOpen = () => setOpen(!open);
     return (
         <>
@@ -19,7 +21,7 @@ const BuyNowModal = ({ addressInfo, setAddressInfo, buyNowFunction }) => {
             >
                 Buy now
             </Button>
-            <Dialog open={open} handler={handleOpen} className=" bg-pink-50">
+            <Dialog open={open} handler={handleOpen} className=" mx-auto my-auto h-1/2 w-2/4  bg-pink-50">
                 <DialogBody className="">
                     <div className="mb-3">
                         <input
@@ -35,6 +37,7 @@ const BuyNowModal = ({ addressInfo, setAddressInfo, buyNowFunction }) => {
                             placeholder='Enter your name'
                             className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600 placeholder-pink-300'
                         />
+                        {/* <h1>Name  {user?.name}</h1> */}
                     </div>
                     <div className="mb-3">
                         <input
@@ -64,7 +67,7 @@ const BuyNowModal = ({ addressInfo, setAddressInfo, buyNowFunction }) => {
                                 })
                             }}
                             placeholder='Enter your pincode'
-                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600 text-pink-600 placeholder-pink-300'
+                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600  placeholder-pink-300'
                         />
                     </div>
 

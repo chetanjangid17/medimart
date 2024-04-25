@@ -5,6 +5,7 @@ import OrderDetail from '../../components/admin/OrderDetail';
 import UserDetail from '../../components/admin/UserDetail';
 import { useContext } from 'react';
 import myContext from '../../context/myContext';
+import Navbar from '../../components/navbar/Navbar';
 
 const AdminDashboard = () => {
     const user = JSON.parse(localStorage.getItem('users'));
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
     const {getAllProduct, getAllOrder, getAllUser} = context;
     return (
         <div>
+            <Navbar/>
             {/* Top */}
             <div className="top mb-5 px-5 mt-5">
                 <div className=" bg-pink-50 py-5 border border-pink-100 rounded-lg">

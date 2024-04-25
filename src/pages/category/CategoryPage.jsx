@@ -64,7 +64,7 @@ const CategoryPage = () => {
                             const { id, title, price, productImageUrl } = item
                             return (
                                 <div key={index} className="p-4 w-full md:w-1/4">
-                                    <div className="h-full border border-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer">
+                                    <div className="h-full border transition-all hover:bg-pink-200  bg-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer hover">
                                         <img
                                             onClick={() => navigate(`/productinfo/${id}`)}
                                             className="lg:h-80  h-96 w-full"
@@ -73,7 +73,7 @@ const CategoryPage = () => {
                                         />
                                         <div className="p-6">
                                             <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-                                                E-bharat
+                                                MeDiMart
                                             </h2>
                                             <h1 className="title-font text-lg font-medium text-gray-900 mb-3">
                                                 {title.substring(0, 25)}

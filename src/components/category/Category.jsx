@@ -3,71 +3,61 @@ import { useNavigate } from "react-router";
 // category 
 const category = [
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/4359/4359963.png',
-        name: 'fashion'
+        image: 'https://pnghq.com/wp-content/uploads/cough-syrup-png-free-image-png-58669.png',
+        name: 'syrup'
     },
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/11833/11833323.png',
-        name: 'shirt'
+        image: 'https://png.pngtree.com/png-clipart/20220909/original/pngtree-luxury-beauty-hair-salon-spa-logo-design-png-image_8523173.png',
+        name: 'beauty'
     },
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/8174/8174424.png',
-        name: 'jacket'
+        image: 'https://cdn-icons-png.flaticon.com/512/13163/13163611.png',
+        name: 'Surgicals'
     },
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/7648/7648246.png',
-        name: 'mobile'
+        image: 'https://www.pngrepo.com/download/109551/pill.png',
+        name: 'Tablets'
     },
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/12142/12142416.png',
-        name: 'laptop'
+        image: 'https://cdn1.iconfinder.com/data/icons/healthcare-106/100/health_clinic_medical_healthcare-07-512.png',
+        name: 'Devices'
     },
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/10686/10686553.png',
-        name: 'shoes'
+        image: "https://cdn-icons-png.flaticon.com/512/3166/3166963.png",
+        name: 'Antiseptic'
     },
+    
     {
-        image: 'https://cdn-icons-png.flaticon.com/256/12114/12114279.png',
-        name: 'home'
+        image:"https://cdn.shopify.com/s/files/1/0599/1425/6556/files/rented_4.png?v=1693607521",
+        name: 'Fitness'
     },
-    {
-        image: 'https://cdn-icons-png.flaticon.com/256/11946/11946316.png',
-        name: 'books'
-    }
+   
 ]
 
 const Category = () => {
     // naviaget 
     const navigate = useNavigate();
     return (
-        <div>
-            <div className="flex flex-col mt-5">
-                {/* main 1 */}
-                <div className="flex overflow-x-scroll lg:justify-center  hide-scroll-bar">
-                    {/* main 2  */}
-                    <div className="flex ">
-                        {/* category  */}
-                        {category.map((item, index) => {
-                            return (
-                                <div key={index} className="px-3 lg:px-10">
-                                    {/* Image  */}
-                                    <div onClick={() => navigate(`/category/${item.name}`)} className=" w-16 h-16 lg:w-24 lg:h-24 max-w-xs rounded-full  bg-pink-500 transition-all hover:bg-pink-400 cursor-pointer mb-1 " >
-                                        <div className="flex justify-center mb-12">
-                                            {/* Image tag  */}
-                                            <img src={item.image} alt="img" />
-                                        </div>
-                                    </div>
-
-                                    {/* Name Text  */}
-                                    <h1 className=' text-sm lg:text-lg text-center font-medium title-font first-letter:uppercase '>{item.name}</h1>
-                                </div>
-                            )
-                        })}
+        <div className=" rounded-b-3xl   pb-5 bg-slate-300">
+            {/* main container */}
+            <div className="grid grid-cols-4 md:flex lg:flex-row justify-center items-center gap-4 overflow-x-auto hide-scroll-bar">
+                {/* category container */}
+                {category.map((element, index) => (
+                    <div key={index} className=" mt-4 flex flex-col items-center px-3 lg:px-10 mb-5 lg:mb-0">
+                        {/* Image */}
+                        <div onClick={() => navigate(`/category/${element.name}`)} className="w-16 h-16 lg:w-24 lg:h-24 max-w-xs rounded-full bg-[#A6B7CB] transition-all hover:bg-pink-400 cursor-pointer mb-1">
+                            <div className="flex justify-center">
+                                {/* Image tag */}
+                                <img src={element.image} alt="img" />
+                            </div>
+                        </div>
+                        {/* Name Text */}
+                        <h1 className="text-sm lg:text-lg text-center font-medium title-font first-letter:uppercase">{element.name}</h1>
                     </div>
-                </div>
+                ))}
             </div>
 
-            {/* style  */}
+            {/* Style for hiding scrollbar */}
             <style dangerouslySetInnerHTML={{ __html: "\n.hide-scroll-bar {\n  -ms-overflow-style: none;\n  scrollbar-width: none;\n}\n.hide-scroll-bar::-webkit-scrollbar {\n  display: none;\n}\n" }} />
         </div>
     );

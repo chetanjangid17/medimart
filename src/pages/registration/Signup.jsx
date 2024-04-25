@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import myContext from "../../context/myContext";
@@ -10,7 +9,7 @@ import Loader from "../../components/loader/Loader";
 
 const Signup = () => {
     const context = useContext(myContext);
-    const {loading, setLoading } = context;
+    const { loading, setLoading } = context;
 
     // navigate 
     const navigate = useNavigate();
@@ -20,6 +19,7 @@ const Signup = () => {
         name: "",
         email: "",
         password: "",
+        phoneNumber: "", // Added phoneNumber field
         role: "user"
     });
 
@@ -29,8 +29,9 @@ const Signup = () => {
 
     const userSignupFunction = async () => {
         // validation 
-        if (userSignup.name === "" || userSignup.email === "" || userSignup.password === "") {
-            toast.error("All Fields are required")
+        if (userSignup.name === "" || userSignup.email === "" || userSignup.password === "" || userSignup.phoneNumber === "") { // Added phoneNumber validation
+            toast.error("All Fields are required");
+            return;
         }
 
         setLoading(true);
@@ -43,6 +44,7 @@ const Signup = () => {
                 email: users.user.email,
                 uid: users.user.uid,
                 role: userSignup.role,
+                phoneNumber: userSignup.phoneNumber, // Added phoneNumber
                 time: Timestamp.now(),
                 date: new Date().toLocaleString(
                     "en-US",
@@ -58,12 +60,13 @@ const Signup = () => {
             const userRefrence = collection(fireDB, "user")
 
             // Add User Detail
-            addDoc(userRefrence, user);
+            await addDoc(userRefrence, user); // Await addDoc
 
             setUserSignup({
                 name: "",
                 email: "",
-                password: ""
+                password: "",
+                phoneNumber: "" // Reset phoneNumber
             })
 
             toast.success("Signup Successfully");
@@ -77,8 +80,8 @@ const Signup = () => {
 
     }
     return (
-        <div className='flex justify-center items-center h-screen'>
-            {loading && <Loader/>}
+        <div className='flex justify-center items-center h-screen  bg-slate-200'>
+            {loading && <Loader />}
             {/* Login Form  */}
             <div className="login_Form bg-pink-50 px-8 py-6 border border-pink-100 rounded-xl shadow-md">
 
@@ -122,6 +125,22 @@ const Signup = () => {
                 </div>
 
                 {/* Input Three  */}
+                <div className="mb-3">
+                    <input
+                        type="text"
+                        placeholder='Phone Number'
+                        value={userSignup.phoneNumber}
+                        onChange={(e) => {
+                            setUserSignup({
+                                ...userSignup,
+                                phoneNumber: e.target.value
+                            })
+                        }}
+                        className='bg-pink-50 border border-pink-200 px-2 py-2 w-96 rounded-md outline-none placeholder-pink-200'
+                    />
+                </div>
+
+                {/* Input Four  */}
                 <div className="mb-5">
                     <input
                         type="password"

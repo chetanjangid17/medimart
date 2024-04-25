@@ -37,10 +37,10 @@ const HomePageProductCard = () => {
     }, [cartItems]);
 
     return (
-        <div className="mt-10">
+        <div className="mt-20">
             {/* Heading  */}
             <div className="">
-                <h1 className=" text-center mb-5 text-2xl font-semibold">Bestselling Products</h1>
+                <h1 className=" text-center mb-5 text-2xl font-semibold">Bestselling Medicines </h1>
             </div>
 
             {/* main 1 */}
@@ -52,12 +52,12 @@ const HomePageProductCard = () => {
                         {loading && <Loader />}
                     </div>
                     {/* main 3  */}
-                    <div className="flex flex-wrap -m-4">
+                    <div className="flex flex-wrap -m-4 ">
                         {getAllProduct.slice(0, 8).map((item, index) => {
                             const { id, title, price, productImageUrl } = item;
                             return (
-                                <div key={index} className="p-4 w-full md:w-1/4">
-                                    <div className="h-full border border-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer">
+                                <div key={index} className="p-4 w-full md:w-1/4  ">
+                                    <div className="h-full border transition-all hover:bg-pink-200  bg-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer hover">
                                         <img
                                             onClick={() => navigate(`/productinfo/${id}`)}
                                             className="lg:h-80  h-96 w-full"
@@ -66,7 +66,7 @@ const HomePageProductCard = () => {
                                         />
                                         <div className="p-6">
                                             <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-                                                E-bharat
+                                                MeDiMart
                                             </h2>
                                             <h1 className="title-font text-lg font-medium text-gray-900 mb-3">
                                                 {title.substring(0, 25)}

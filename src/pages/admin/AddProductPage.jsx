@@ -8,28 +8,35 @@ import Loader from "../../components/loader/Loader";
 
 const categoryList = [
     {
-        name: 'fashion'
+        name: "None"
     },
     {
-        name: 'shirt'
+        name: 'syrup'
     },
     {
-        name: 'jacket'
+       
+        name: 'beauty'
     },
     {
-        name: 'mobile'
+        
+        name: 'Surgicals'
     },
     {
-        name: 'laptop'
+      
+        name: 'Tablets'
     },
     {
-        name: 'shoes'
+    
+        name: 'Devices'
     },
     {
-        name: 'home'
+   
+        name: 'Antiseptic'
     },
+  
     {
-        name: 'books'
+       
+        name: 'Fitness'
     }
 ]
 
@@ -59,7 +66,7 @@ const AddProductPage = () => {
         )
     });
 
-
+    console.log(product,"arr")
     // Add Product Function
     const addProductFunction = async () => {
         if (product.title == "" || product.price == "" || product.productImageUrl == "" || product.category == "" || product.description == "") {

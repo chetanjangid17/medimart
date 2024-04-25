@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import MyContext from './myContext';
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
+import {  addDoc,  where } from 'firebase/firestore';
 import { fireDB } from '../firebase/FirebaseConfig';
 import toast from 'react-hot-toast';
 
@@ -38,11 +39,33 @@ function MyState({ children }) {
         }
     }
 
+    const getAllProductFunctio = async () => {
+        setLoading(true);
+        try {
+            const q = query(
+                collection(fireDB, "products"),
+                orderBy('time')
+            );
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const productArray = [];
+                querySnapshot.forEach((doc) => {
+                    productArray.push({ ...doc.data(), id: doc.id });
+                });
+                setGetAllProduct(productArray);
+                setLoading(false);
+            });
+            return () => unsubscribe();
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
 
     // Order State 
     const [getAllOrder, setGetAllOrder] = useState([]);
 
-
+    const [allFeedback, setAllFeedback] = useState([]);
     /**========================================================================
      *                           GET All Order Function
      *========================================================================**/
@@ -68,6 +91,20 @@ function MyState({ children }) {
             setLoading(false);
         }
     }
+
+
+     // Function to request order return
+     const requestOrderReturn = async (orderId) => {
+        setLoading(true);
+        try {
+            // Your logic for requesting order return
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
 
 
     // Delete oder Function
@@ -114,11 +151,54 @@ function MyState({ children }) {
             setLoading(false);
         }
     }
+    // Function to get feedback for a specific product
+    const getFeedbackForProduct = async (productId) => {
+        setLoading(true);
+        try {
+            const q = query(
+                collection(fireDB, "feedback"),
+                where('productId', '==', productId),
+                orderBy('time')
+            );
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const feedbackArray = [];
+                querySnapshot.forEach((doc) => {
+                    feedbackArray.push({ ...doc.data(), id: doc.id });
+                });
+                setAllFeedback(feedbackArray);
+                setLoading(false);
+            });
+            return () => unsubscribe();
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
+    // Function to add feedback
+    const addFeedback = async (productId, content) => {
+        setLoading(true);
+        try {
+            const docRef = await addDoc(collection(fireDB, "feedback"), {
+                productId: productId,
+                content: content,
+                time: new Date(),
+            });
+           
+            setLoading(false);
+        } catch (error) {
+            console.error("Error adding feedback: ", error);
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         getAllProductFunction();
+        getAllProductFunctio();
         getAllOrderFunction();
         getAllUserFunction();
+        
+
     }, []);
     return (
         <MyContext.Provider value={{
@@ -128,7 +208,11 @@ function MyState({ children }) {
             getAllProductFunction,
             getAllOrder,
             orderDelete,
-            getAllUser
+            getAllUser,
+            allFeedback,
+            getFeedbackForProduct,
+            addFeedback,
+            requestOrderReturn,
         }}>
             {children}
         </MyContext.Provider>

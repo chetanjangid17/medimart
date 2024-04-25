@@ -12,7 +12,7 @@ const HomePage = () => {
             <Category/>
             <HomePageProductCard/>
             <Track/>
-            <Testimonial/>
+            {/* <Testimonial/> */}
         </Layout>
     );
 }
