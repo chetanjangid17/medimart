@@ -54,7 +54,7 @@ const HomePageProductCard = () => {
             {getAllProduct.slice(0, 8).map((item, index) => {
               const { id, title, price, productImageUrl } = item;
               return (
-                <div key={index} className="p-4 w-full md:w-1/3  sm:w-1/3 lg:w-1/5 ">
+                <div key={index} className="p-4 w-full md:w-1/3  sm:w-1/3 lg:w-1/4 ">
                   <div
                     className="lg:h-[55vh] lg:w-[17vw] sm:w-[19vw] sm:h-[60vh] border transition-all hover:bg-[#A4BEF9]  bg-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer hover"
                   >
