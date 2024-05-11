@@ -1,60 +1,35 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
+import { deleteDoc, doc } from "firebase/firestore";
+import { toast } from "react-hot-toast";
 import myContext from "../../context/myContext";
+import { fireDB } from "../../firebase/FirebaseConfig";
 
 const UserDetail = () => {
     const context = useContext(myContext);
-    const { getAllUser } = context;
+    const { getAllUser, setGetAllUser, setLoading } = context;
 
-    // State to store delete requests
-    const [deleteRequests, setDeleteRequests] = useState([]);
-
-    // Function to fetch delete requests
-    const fetchDeleteRequests = async () => {
+    const handleDeleteUser = async (id) => {
+        setLoading(true);
         try {
-            const response = await fetch('/delete-requests'); // Assuming you have an endpoint to fetch delete requests
-            if (response.ok) {
-                const data = await response.json();
-                setDeleteRequests(data);
-            } else {
-                console.error('Failed to fetch delete requests');
-            }
+            await deleteDoc(doc(fireDB, 'user', id));
+            toast.success('User deleted successfully');
+            // Update the user list after deletion
+            const updatedUsers = getAllUser.filter(user => user.id !== id);
+            // setGetAllUser(updatedUsers);
+            setLoading(false);
         } catch (error) {
-            console.error('Error fetching delete requests:', error);
+            console.error("Error deleting user:", error);
+            toast.error("Failed to delete user");
+            setLoading(false);
         }
     };
-
-    // Function to handle delete account request by the admin
-    const handleDeleteAccount = async (userId) => {
-        try {
-            const response = await fetch(`/delete-account/${userId}`, {
-                method: 'DELETE'
-            });
-            if (response.ok) {
-                console.log('User account deleted successfully');
-                // Refresh the list of users to reflect the changes
-                getAllUserFunction();
-            } else {
-                console.error('Failed to delete user account');
-            }
-        } catch (error) {
-            console.error('Error deleting user account:', error);
-        }
-    };
-
-    useEffect(() => {
-        // Fetch delete requests when the component mounts
-        fetchDeleteRequests();
-    }, []);
 
     return (
         <div>
             <div>
                 <div className="py-5 flex justify-between items-center">
-                    {/* text  */}
-                    <h1 className="text-xl text-pink-300 font-bold">All User</h1>
+                    <h1 className="text-xl text-pink-300 font-bold">All Users</h1>
                 </div>
-
-                {/* table  */}
                 <div className="w-full overflow-x-auto">
                     <table className="w-full text-left border border-collapse sm:border-separate border-pink-100 text-pink-400">
                         <tbody>
@@ -81,38 +56,31 @@ const UserDetail = () => {
                                     Actions
                                 </th>
                             </tr>
-                            {getAllUser.map((value, index) => {
-                                return (
-                                    <tr key={index} className="text-pink-300">
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500">
-                                            {index + 1}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase">
-                                            {value.name}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
-                                            {value.email}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
-                                            {value.uid}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
-                                            {value.role}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
-                                            {value.date}
-                                        </td>
-                                        <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
-                                            {/* Check if the user has a delete request */}
-                                            {deleteRequests.some(request => request.userId === value.uid) ? (
-                                                <button onClick={() => handleDeleteAccount(value.uid)}>Delete Account</button>
-                                            ) : (
-                                                <span>No Delete Request</span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                            {getAllUser.map((user, index) => (
+                                <tr key={user.id}  className="text-pink-300">
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500">
+                                        {index + 1}
+                                    </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase">
+                                        {user.name}
+                                    </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
+                                        {user.email}
+                                    </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
+                                        {user.uid}
+                                    </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
+                                        {user.role}
+                                    </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 cursor-pointer">
+                                        {user.date}
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleDeleteUser(user.id)} className="...">Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

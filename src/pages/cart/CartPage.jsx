@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { fireDB } from "../../firebase/FirebaseConfig";
-import BuyNowModal from "../../components/buyNowModal/BuyNowModal";
+import Modal from "../../components/buyNowModal/BuyNowModal";
 import { Navigate } from "react-router";
 
 const CartPage = () => {
@@ -39,30 +39,65 @@ const CartPage = () => {
 
     // user
     const user = JSON.parse(localStorage.getItem('users'))
-
-    // Buy Now Function
+    
     const [addressInfo, setAddressInfo] = useState({
         name: "",
         address: "",
         pincode: "",
         mobileNumber: "",
         time: Timestamp.now(),
-        date: new Date().toLocaleString(
-            "en-US",
-            {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-            }
-        )
-    });
+        date: new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
+      });
 
-    const buyNowFunction = () => {
-        // validation 
-        if (addressInfo.name === "" || addressInfo.address === "" || addressInfo.pincode === "" || addressInfo.mobileNumber === "") {
-            return toast.error("All Fields are required")
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
+    const [pincode, setPincode] = useState("");
+    const [mobileNumber, setmobileNumber] = useState("");
+
+    const buyNow = async () => {
+        // validation
+        if (name === "" || address == "" || pincode == "" || mobileNumber == "") {
+          return toast.error("All fields are required", {
+            position: "top-center",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
         }
+        const addressInfo = {
+          name,
+          address,
+          pincode,
+          mobileNumber,
+          date: new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }),
+        };
 
+
+        var options = {
+            key: "rzp_test_U8A2AwRRntEltL", // Replace with your actual Razorpay key ID
+            key_secret: "sbLh8hGAcG7pavdBLp2qHwBG", // Replace with your actual Razorpay key secret
+          amount: parseInt(cartTotal * 100),
+          currency: "INR",
+          order_receipt: "order_rcptid_" + name,
+          name: "MediMart",
+          description: "for testing purpose",
+          handler: function (response) {
+            // console.log(response)
+            toast.success("Payment Successful");
+    
+            const paymentId = response.razorpay_payment_id;
         // Order Info 
         const orderInfo = {
             cartItems,
@@ -78,7 +113,9 @@ const CartPage = () => {
                     day: "2-digit",
                     year: "numeric",
                 }
-            )
+            ),
+           
+            paymentId,
         }
         try {
             const orderRef = collection(fireDB, 'order');
@@ -91,10 +128,19 @@ const CartPage = () => {
             })
             toast.success("Order Placed Successfull")
         } catch (error) {
-            console.log(error)
-        }
-
-    }
+            console.log(error);
+          }
+        },
+  
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      var pay = new window.Razorpay(options);
+      pay.open();
+      console.log(pay);
+    };
+  
     return (
         <Layout>
             <div className="container mx-auto px-4 max-w-7xl lg:px-0">
@@ -205,15 +251,23 @@ const CartPage = () => {
                                     </div>
                                 </dl>
                                 <div className="px-2 pb-4 font-medium text-green-700">
-                                    <div className="flex gap-4 mb-6">
-                                        {user
-                                            ? <BuyNowModal
-                                                addressInfo={addressInfo}
-                                                setAddressInfo={setAddressInfo}
-                                                buyNowFunction={buyNowFunction}
-                                            /> : <Navigate to={'/login'}/>
-                                        }
-                                    </div>
+                                <div className="flex gap-4 mb-6">
+                    {user ? (
+                      <Modal
+                        name={name}
+                        address={address}
+                        pincode={pincode}
+                        mobileNumber={mobileNumber}
+                        setName={setName}
+                        setAddress={setAddress}
+                        setPincode={setPincode}
+                        setmobileNumber={setmobileNumber}
+                        buyNow={buyNow}
+                      />
+                    ) : (
+                      <Navigate to={"/login"} />
+                    )}
+                  </div>
                                 </div>
                             </div>
                         </section>

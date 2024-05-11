@@ -38,14 +38,14 @@ const Category = () => {
     // naviaget 
     const navigate = useNavigate();
     return (
-        <div className=" rounded-b-3xl   pb-5 bg-slate-300">
+        <div className=" rounded-b-3xl md:rounded-none pb-5 bg-slate-300">
             {/* main container */}
             <div className="grid grid-cols-4 md:flex lg:flex-row justify-center items-center gap-4 overflow-x-auto hide-scroll-bar">
                 {/* category container */}
                 {category.map((element, index) => (
                     <div key={index} className=" mt-4 flex flex-col items-center px-3 lg:px-10 mb-5 lg:mb-0">
                         {/* Image */}
-                        <div onClick={() => navigate(`/category/${element.name}`)} className="w-16 h-16 lg:w-24 lg:h-24 max-w-xs rounded-full bg-[#A6B7CB] transition-all hover:bg-pink-400 cursor-pointer mb-1">
+                        <div onClick={() => navigate(`/category/${element.name}`)} className="w-16 h-16 lg:w-24 lg:h-24 max-w-xs rounded-full bg-[#A6B7CB] transition-all hover:bg-[#A4BEF9] cursor-pointer mb-1">
                             <div className="flex justify-center">
                                 {/* Image tag */}
                                 <img src={element.image} alt="img" />

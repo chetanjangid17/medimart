@@ -1,110 +1,96 @@
-/* eslint-disable react/prop-types */
-import {
-    Button,
-    Dialog,
-    DialogBody,
-} from "@material-tailwind/react";
-import { useState } from "react";
+import { Dialog, Transition } from '@headlessui/react'
+import { Fragment, useState } from 'react'
 
-const BuyNowModal = ({ addressInfo, setAddressInfo, buyNowFunction }) => {
-    const [open, setOpen] = useState(false);
-    // const user = JSON.parse(localStorage.getItem('users'));
+export default function Modal({ name, address, pincode, mobileNumber, setName, setAddress, setPincode, setmobileNumber, buyNow }) {
+    let [isOpen, setIsOpen] = useState(false)
 
-    // const context = useContext(myContext);
-    const handleOpen = () => setOpen(!open);
+    function closeModal() {
+        setIsOpen(false)
+    }
+
+    function openModal() {
+        setIsOpen(true)
+    }
+
+    // console.log(name,address,pincode,mobileNumber)
     return (
         <>
-            <Button
-                type="button"
-                onClick={handleOpen}
-                className="w-full px-4 py-3 text-center text-gray-100 bg-pink-600 border border-transparent dark:border-gray-700 hover:border-pink-500 hover:text-pink-700 hover:bg-pink-100 rounded-xl"
-            >
-                Buy now
-            </Button>
-            <Dialog open={open} handler={handleOpen} className=" mx-auto my-auto h-1/2 w-2/4  bg-pink-50">
-                <DialogBody className="">
-                    <div className="mb-3">
-                        <input
-                            type="text"
-                            name="name"
-                            value={addressInfo.name}
-                            onChange={(e) => {
-                                setAddressInfo({
-                                    ...addressInfo,
-                                    name: e.target.value
-                                })
-                            }}
-                            placeholder='Enter your name'
-                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600 placeholder-pink-300'
-                        />
-                        {/* <h1>Name  {user?.name}</h1> */}
-                    </div>
-                    <div className="mb-3">
-                        <input
-                            type="text"
-                            name="address"
-                            value={addressInfo.address}
-                            onChange={(e) => {
-                                setAddressInfo({
-                                    ...addressInfo,
-                                    address: e.target.value
-                                })
-                            }}
-                            placeholder='Enter your address'
-                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600 placeholder-pink-300'
-                        />
-                    </div>
+            <div className="  text-center rounded-lg text-white font-bold">
+                <button
+                    type="button"
+                    onClick={openModal}
+                    className="w-full  bg-violet-600 py-2 text-center rounded-lg text-white font-bold"
+                >
+                    Buy Now
+                </button>
+            </div>
 
-                    <div className="mb-3">
-                        <input
-                            type="number"
-                            name="pincode"
-                            value={addressInfo.pincode}
-                            onChange={(e) => {
-                                setAddressInfo({
-                                    ...addressInfo,
-                                    pincode: e.target.value
-                                })
-                            }}
-                            placeholder='Enter your pincode'
-                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600  placeholder-pink-300'
-                        />
+            <Transition appear show={isOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-10" onClose={closeModal}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl p-2  text-left align-middle shadow-xl transition-all bg-gray-50">
+
+                                    <section className="">
+                                        <div className="flex flex-col items-center justify-center py-8 mx-auto  lg:py-0">
+                                            {/* <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                                                <img className="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo" />
+                                                Flowbite
+                                            </a> */}
+                                            <div className="w-full  rounded-lg md:mt-0 sm:max-w-md xl:p-0 ">
+                                                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+
+                                                    <form className="space-y-4 md:space-y-6" action="#">
+                                                        <div>
+                                                            <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Enter Full Name</label>
+                                                            <input value={name} onChange={(e)=>setName(e.target.value)} type="name" name="name" id="name" className=" border outline-0 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-100" required />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Enter Full Address</label>
+                                                            <input value={address} onChange={(e)=>setAddress(e.target.value)} type="text" name="address" id="address" className=" border outline-0 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-100" required />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="pincode" className="block mb-2 text-sm font-medium text-gray-900">Enter Pincode</label>
+                                                            <input value={pincode} onChange={(e)=>setPincode(e.target.value)} type="text" name="pincode" id="pincode" className=" border outline-0 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-100" required />
+                                                        </div>
+                                                        <div>
+                                                            <label htmlFor="mobileNumber" className="block mb-2 text-sm font-medium text-gray-900">Enter Mobile Number</label>
+                                                            <input value={mobileNumber} onChange={(e)=>setmobileNumber(e.target.value)} type="text" name="mobileNumber" id="mobileNumber" className=" border outline-0 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-100" required />
+                                                        </div>
+
+                                                    </form>
+                                                    <button onClick={()=>{buyNow(); closeModal()}} type="button" className="focus:outline-none w-full text-white bg-violet-600 hover:bg-violet-800  outline-0 font-medium rounded-lg text-sm px-5 py-2.5 ">Order Now</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
                     </div>
-
-                    <div className="mb-3">
-                        <input
-                            type="text"
-                            name="mobileNumber"
-                            value={addressInfo.mobileNumber}
-                            onChange={(e) => {
-                                setAddressInfo({
-                                    ...addressInfo,
-                                    mobileNumber: e.target.value
-                                })
-                            }}
-                            placeholder='Enter your mobileNumber'
-                            className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none text-pink-600 placeholder-pink-300'
-                        />
-                    </div>
-
-                    <div className="">
-                        <Button
-
-                            type="button"
-                            onClick={() => {
-                                handleOpen();
-                                buyNowFunction();
-                            }}
-                            className="w-full px-4 py-3 text-center text-gray-100 bg-pink-600 border border-transparent dark:border-gray-700 rounded-lg"
-                        >
-                            Buy now
-                        </Button>
-                    </div>
-
-                </DialogBody>
-            </Dialog>
+                </Dialog>
+            </Transition>
         </>
-    );
+    )
 }
-
-export default BuyNowModal;

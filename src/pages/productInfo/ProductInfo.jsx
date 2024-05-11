@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import MyContext from "../../context/myContext";
 import { useParams, useNavigate } from "react-router"; // Import useNavigate
+
 import { fireDB } from "../../firebase/FirebaseConfig";
 import {
   doc,
   getDoc,
+  getDocs,
   collection,
   addDoc,
   query,
@@ -101,13 +103,13 @@ const ProductInfo = () => {
 
   return (
     <Layout>
-      <section className="py-5 lg:py-16 font-poppins dark:bg-wheat ">
+      <section className="py-5 lg:py-16 font-poppins dark:bg-wheat  ">
         {loading ? (
           <div className="flex justify-center items-center">
             <Loader />
           </div>
         ) : (
-          <div className="max-w-6xl px-4 mx-auto h-full border items-center rounded-3xl">
+          <div className="max-w-5xl px-4 mx-auto h-full border items-center rounded-3xl">
             <div className="flex flex-wrap mb-24 -mx-4">
               <div className="w-full px-4 mb-8 md:w-1/2 md:mb-0">
                 <div className="">

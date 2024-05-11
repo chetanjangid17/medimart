@@ -8,17 +8,25 @@ import toast from 'react-hot-toast'; // Import toast for notifications
 const UserDashboard = () => {
     const user = JSON.parse(localStorage.getItem('users'));
     const context = useContext(myContext);
-    const { loading, getAllOrder, addFeedback } = context;
+    const { loading, getAllOrder, addFeedback, deleteUsersCollection, requestOrderReturn } = context;
     const [feedbackContentMap, setFeedbackContentMap] = useState({}); // Feedback content for each product
     const [isSubmitting, setIsSubmitting] = useState({}); // Submission status for each product
     const navigate = useNavigate();
 
+    // logout function 
+    const logout = () => {
+        localStorage.clear('users');
+        navigate("/login");
+    };
 
-   // logout function 
-   const logout = () => {
-    localStorage.clear('users');
-    navigate("/login")
-}
+    // Function to handle account deletion
+    const handleDeleteAccount = () => {
+        if (window.confirm("Are you sure you want to delete your account?")) {
+            deleteUsersCollection(user.uid);
+            localStorage.clear('users');
+            navigate("/login");
+        }
+    };
 
     // Function to handle feedback submission for a specific product
     const handleSubmitFeedback = async (e, productId) => {
@@ -41,8 +49,14 @@ const UserDashboard = () => {
         }
         setIsSubmitting(prevState => ({ ...prevState, [productId]: false })); // Set submission status back to false for the specific product
     };
-    
-    
+
+    // Function to handle request order return
+    const handleRequestOrderReturn = (orderId) => {
+        if (window.confirm("Are you sure you want to request a return for this order?")) {
+            requestOrderReturn(orderId);
+        }
+    };
+
     return (
         <Layout>
             <div className="container mx-auto px-4 py-5 lg:py-8">
@@ -78,14 +92,18 @@ const UserDashboard = () => {
                                 <span className="font-bold">Date : </span>
                                 {user?.date}
                             </h1>
-                           <div className="  mt-3 flex justify-center">
-
-                            {user && <button className="  hover:bg-purple-300 bg-red-600 cursor-pointer btn btn-ghost  items-center" onClick={logout}>
-                Logout
-            </button>}
-                           </div>
-                           
-                            
+                            <div className="  mt-3 flex justify-center">
+                                {user && (
+                                    <>
+                                        {/* <button className="hover:bg-purple-300 bg-red-600 cursor-pointer btn btn-ghost items-center mr-2" onClick={() => handleDeleteAccount(user?.uid)}>
+                                            Delete Account
+                                        </button> */}
+                                        <button className="hover:bg-purple-300 bg-red-600 cursor-pointer btn btn-ghost items-center" onClick={logout}>
+                                            Logout
+                                        </button>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,17 +127,17 @@ const UserDashboard = () => {
                                     const { status } = order;
                                     const productId = id; // Assign product id
                                     return (
-                                        <div key={index} className="mt-5 flex flex-col  overflow-hidden rounded-xl border border-pink-100 md:flex-row">
+                                        <div key={index} className="mt-5 flex flex-col overflow-hidden rounded-xl border border-pink-100 md:flex-row">
                                             {/* Left */}
                                             <div className="w-full border-r border-pink-100 bg-pink-50 md:max-w-xs">
                                                 <div className="p-8">
                                                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-1">
                                                         <div className="mb-4">
-                                                            <div className="text-sm font-semibold  text-black">Order Id</div>
+                                                            <div className="text-sm font-semibold text-black">Order Id</div>
                                                             <div className="text-sm font-medium text-gray-900">#{id}</div>
                                                         </div>
                                                         <br/>
-                                                            
+
                                                         <div className="mb-4">
                                                             <div className="text-sm font-semibold">Date</div>
                                                             <div className="text-sm font-medium text-gray-900">{date}</div>
@@ -127,12 +145,12 @@ const UserDashboard = () => {
 
                                                         <div className="mb-4">
                                                             <div className="text-sm font-semibold">Total Amount</div>
-                                                            <div className="text-sm font-medium text-gray-900">₹ {price * quantity}</div>
+                                                            <div className="text-sm font-medium text-red-600">₹ {price * quantity}</div>
                                                         </div>
 
                                                         <div className="mb-4">
                                                             <div className="text-sm font-semibold">Order Status</div>
-                                                            <div className={`text-sm font-medium text-${status === 'pending' ? 'red' : 'green'}-800 first-letter:uppercase`}>{status}</div>
+                                                            <div className={`text-sm font-medium text-${status === 'pending' ? 'red' : 'green'}-800 first-letter:uppercase  text-green-600 `}>{status}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -161,8 +179,16 @@ const UserDashboard = () => {
                                                                 </div>
                                                             </div>
 
-                                                            <div className="ml-auto flex flex-col items-end justify-between">
+                                                            <div className="ml-auto flex flex-col items-end justify-between ">
                                                                 <p className="text-right text-sm font-bold text-gray-900">₹ {price}</p>
+                                                            <div className="mt-2">
+                                                            <button
+                                                                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md"
+                                                                onClick={() => handleRequestOrderReturn(order.id)}
+                                                            >
+                                                                Request Order Return
+                                                            </button>
+                                                        </div>
                                                                 <div className="mt-4">
                                                                     <form onSubmit={(e) => handleSubmitFeedback(e, productId)}>
                                                                         <textarea
@@ -182,6 +208,7 @@ const UserDashboard = () => {
                                                                 </div>
                                                             </div>
                                                         </li>
+                                                      
                                                     </ul>
                                                 </div>
                                             </div>

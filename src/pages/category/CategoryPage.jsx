@@ -63,11 +63,13 @@ const CategoryPage = () => {
                                              {filterProduct.map((item, index) => {
                             const { id, title, price, productImageUrl } = item
                             return (
-                                <div key={index} className="p-4 w-full md:w-1/4">
-                                    <div className="h-full border transition-all hover:bg-pink-200  bg-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer hover">
+                                <div key={index} className="p-4 w-full md:w-1/3  sm:w-1/3 lg:w-1/5 ">
+                                <div
+                    className="lg:h-[55vh] lg:w-[17vw] sm:w-[19vw] sm:h-[60vh] border transition-all hover:bg-[#A4BEF9]  bg-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer hover"
+                  >
                                         <img
                                             onClick={() => navigate(`/productinfo/${id}`)}
-                                            className="lg:h-80  h-96 w-full"
+                                            className="  sm:h-[25vh] sm:w-[19vw] md:w-[19vw] h-96 w-full"
                                             src={productImageUrl}
                                             alt="blog"
                                         />
@@ -89,7 +91,7 @@ const CategoryPage = () => {
                                                 ?
                                                 <button
                                                     onClick={() => deleteCart(item)}
-                                                    className=" bg-red-700 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold">
+                                                    className="bg-[#003bfc] hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold">
                                                     Delete To Cart
                                                 </button>
 
@@ -97,7 +99,7 @@ const CategoryPage = () => {
 
                                                 <button
                                                     onClick={() => addCart(item)}
-                                                    className=" bg-pink-500 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold">
+                                                    className=" bg-[#0087FC] hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold">
                                                     Add To Cart
                                                 </button>
                                             }

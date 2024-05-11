@@ -19,7 +19,7 @@ const Signup = () => {
         name: "",
         email: "",
         password: "",
-        phoneNumber: "", // Added phoneNumber field
+        phoneNumber: "",
         role: "user"
     });
 
@@ -29,8 +29,40 @@ const Signup = () => {
 
     const userSignupFunction = async () => {
         // validation 
-        if (userSignup.name === "" || userSignup.email === "" || userSignup.password === "" || userSignup.phoneNumber === "") { // Added phoneNumber validation
+        if (
+            userSignup.name === "" ||
+            userSignup.email === "" ||
+            userSignup.password === "" ||
+            userSignup.phoneNumber === ""
+        ) {
             toast.error("All Fields are required");
+            return;
+        }
+
+        // Name validation (letters only and at least 2 characters long)
+        const nameRegex = /^[A-Za-z]+$/;
+        if (!nameRegex.test(userSignup.name) || userSignup.name.length < 2) {
+            toast.error("Invalid Name. Name must contain only letters and be at least 2 characters long");
+            return;
+        }
+
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userSignup.email)) {
+            toast.error("Invalid Email Address");
+            return;
+        }
+
+        // Phone number validation (digits only and 10 digits long)
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(userSignup.phoneNumber)) {
+            toast.error("Invalid Phone Number. Phone number must contain only digits and be 10 characters long");
+            return;
+        }
+
+        // Password strength validation (at least 6 characters)
+        if (userSignup.password.length < 6) {
+            toast.error("Password must be at least 6 characters long");
             return;
         }
 
@@ -44,7 +76,7 @@ const Signup = () => {
                 email: users.user.email,
                 uid: users.user.uid,
                 role: userSignup.role,
-                phoneNumber: userSignup.phoneNumber, // Added phoneNumber
+                phoneNumber: userSignup.phoneNumber,
                 time: Timestamp.now(),
                 date: new Date().toLocaleString(
                     "en-US",
@@ -56,17 +88,17 @@ const Signup = () => {
                 )
             }
 
-            // create user Refrence
-            const userRefrence = collection(fireDB, "user")
+            // create user Reference
+            const userReference = collection(fireDB, "user")
 
             // Add User Detail
-            await addDoc(userRefrence, user); // Await addDoc
+            await addDoc(userReference, user);
 
             setUserSignup({
                 name: "",
                 email: "",
                 password: "",
-                phoneNumber: "" // Reset phoneNumber
+                phoneNumber: ""
             })
 
             toast.success("Signup Successfully");
@@ -76,14 +108,19 @@ const Signup = () => {
         } catch (error) {
             console.log(error);
             setLoading(false);
+            if (error.code === "auth/email-already-in-use") {
+                toast.error("Email is already registered. Please use a different email address.");
+            } else {
+                toast.error("Signup failed. Please try again later.");
+            }
         }
-
     }
+
     return (
         <div className='flex justify-center items-center h-screen  bg-slate-200'>
             {loading && <Loader />}
-            {/* Login Form  */}
-            <div className="login_Form bg-pink-50 px-8 py-6 border border-pink-100 rounded-xl shadow-md">
+            {/* Signup Form  */}
+            <div className="signup_Form bg-pink-50 px-8 py-6 border border-pink-100 rounded-xl shadow-md">
 
                 {/* Top Heading  */}
                 <div className="mb-5">
@@ -92,7 +129,7 @@ const Signup = () => {
                     </h2>
                 </div>
 
-                {/* Input One  */}
+                {/* Input One (Full Name) */}
                 <div className="mb-3">
                     <input
                         type="text"
@@ -108,7 +145,7 @@ const Signup = () => {
                     />
                 </div>
 
-                {/* Input Two  */}
+                {/* Input Two (Email Address) */}
                 <div className="mb-3">
                     <input
                         type="email"
@@ -124,7 +161,7 @@ const Signup = () => {
                     />
                 </div>
 
-                {/* Input Three  */}
+                {/* Input Three (Phone Number) */}
                 <div className="mb-3">
                     <input
                         type="text"
@@ -140,7 +177,7 @@ const Signup = () => {
                     />
                 </div>
 
-                {/* Input Four  */}
+                {/* Input Four (Password) */}
                 <div className="mb-5">
                     <input
                         type="password"
@@ -156,7 +193,7 @@ const Signup = () => {
                     />
                 </div>
 
-                {/* Signup Button  */}
+                {/* Signup Button */}
                 <div className="mb-5">
                     <button
                         type='button'
@@ -167,6 +204,7 @@ const Signup = () => {
                     </button>
                 </div>
 
+                {/* Link to Login */}
                 <div>
                     <h2 className='text-black'>Have an account <Link className=' text-pink-500 font-bold' to={'/login'}>Login</Link></h2>
                 </div>

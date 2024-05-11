@@ -1,9 +1,24 @@
-import { useContext } from "react";
+import { useContext , useState} from "react";
 import myContext from "../../context/myContext";
 
 const OrderDetail = () => {
     const context = useContext(myContext);
-    const { getAllOrder, orderDelete } = context;
+    const { getAllOrder, orderDelete, updateOrderStatus } = context;
+
+    const handleStatusChange = (orderId, newStatus) => {
+        updateOrderStatus(orderId, newStatus);
+    };
+
+    // State to manage the selected status for each row
+    const [selectedStatuses, setSelectedStatuses] = useState({});
+
+    // Function to update the selected status for a specific order
+    const handleSelectChange = (orderId, value) => {
+        setSelectedStatuses(prevState => ({
+            ...prevState,
+            [orderId]: value
+        }));
+    };
     // console.log(getAllOrder)
     return (
         <div>
@@ -96,19 +111,31 @@ const OrderDetail = () => {
                                     className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
                                     Action
                                 </th>
+                                
+                                <th scope="col"
+                                    className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
+                                    Status Change
+                                </th>
+
+
+                                <th scope="col"
+                                    className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
+                                   Status change button
+                                </th>
+ 
 
 
                             </tr>
-                            {getAllOrder.map((order) => {
+                            {getAllOrder.map((order,orderIndex) => {
                                 console.log(order)
                                 return (
                                     <>
-                                        {order.cartItems.map((item, index) => {
+                                        {order.cartItems.map((item) => {
                                             const { id, productImageUrl, title, category, price, quantity } = item
                                             return (
-                                                <tr key={index} className="text-pink-300">
+                                                <tr key={orderIndex} className="text-pink-300">
                                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                                                        {index + 1}
+                                                        {orderIndex+1}
                                                     </td>
 
                                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
@@ -169,6 +196,24 @@ const OrderDetail = () => {
 
                                                     <td onClick={()=> orderDelete(order.id)} className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500  text-red-500 cursor-pointer ">
                                                         Delete
+                                                    </td>
+                                                    <td>
+                                                        {/* Dropdown menu for selecting status */}
+                                                        <select
+                                                            value={selectedStatuses[order.id] || ''}
+                                                            onChange={(e) => handleSelectChange(order.id, e.target.value)}
+                                                            className="cursor-pointer focus:outline-none"
+                                                        >
+                                                            <option value="">Select Status</option>
+                                                            <option value="Delivered">Delivered</option>
+                                                            <option value="Return Accepted">Return Accepted</option>
+                                                            <option value="Cancel Order">Cancel Order</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <button onClick={() => handleStatusChange(order.id, selectedStatuses[order.id])} className="cursor-pointer">
+                                                            Change Status
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             )

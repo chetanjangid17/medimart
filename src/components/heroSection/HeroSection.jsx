@@ -1,7 +1,7 @@
 const HeroSection = () => {
     return (
         <div className="">
-            <img className="h-[590px] lg:w-full lg:h-[590px]" src="https://wallpaperaccess.com/full/136995.jpg" alt="" />
+            <img className="h-[50wv] lg:w-full lg:h-[70vh] blur[10%]-lg" src="../img/d.jpg" alt="" />
             {/* <div className="absolute top-1/4 left-1/3 right-20 transform -translate-x-1/2 -translate-y-1/4 text-center text-white">
                 <h1 className="text-4xl lg:text-5xl font-bold text-green-200">Quality Medical Supplies</h1>
                 <h2 className="text-2xl lg:text-3xl font-light text-cyan-950">For All Your Needs</h2>
