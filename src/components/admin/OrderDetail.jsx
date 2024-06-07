@@ -1,4 +1,4 @@
-import { useContext , useState} from "react";
+import { useContext , useState,useEffect} from "react";
 import myContext from "../../context/myContext";
 
 const OrderDetail = () => {
@@ -11,6 +11,12 @@ const OrderDetail = () => {
 
     // State to manage the selected status for each row
     const [selectedStatuses, setSelectedStatuses] = useState({});
+    const [totalSales, setTotalSales] = useState(0);
+
+        // State variables for filters
+        const [statusFilter, setStatusFilter] = useState("");
+        const [productNameFilter, setProductNameFilter] = useState("");
+        const [userNameFilter, setUserNameFilter] = useState("");
 
     // Function to update the selected status for a specific order
     const handleSelectChange = (orderId, value) => {
@@ -19,14 +25,65 @@ const OrderDetail = () => {
             [orderId]: value
         }));
     };
+    useEffect(() => {
+        let total = 0;
+        getAllOrder.forEach(order => {
+            order.cartItems.forEach(item => {
+                total += item.price * item.quantity;
+            });
+        });
+        setTotalSales(total);
+    }, [getAllOrder]);
+
+     // Filter orders based on status, product name, and user name
+     const filteredOrders = getAllOrder.filter(order => {
+        const matchesStatus = statusFilter ? order.status === statusFilter : true;
+        const matchesProductName = productNameFilter ? 
+            order.cartItems.some(item => item.title.toLowerCase().includes(productNameFilter.toLowerCase())) : true;
+        const matchesUserName = userNameFilter ? 
+            order.addressInfo.name.toLowerCase().includes(userNameFilter.toLowerCase()) : true;
+        return matchesStatus && matchesProductName && matchesUserName;
+    });
+
+    
     // console.log(getAllOrder)
     return (
         <div>
             <div>
-                <div className="py-5">
+                <div className="py-5 text-center">
                     {/* text  */}
                     <h1 className=" text-xl text-pink-300 font-bold">All Order</h1>
+                <h2 className="text-lg text-green-500 font-bold">Total Sales: ₹{totalSales}</h2>
                 </div>
+                <div className="py-4 flex justify-center space-x-6">
+                <input 
+                    type="text" 
+                    placeholder="Filter by User Name" 
+                    value={userNameFilter} 
+                    onChange={(e) => setUserNameFilter(e.target.value)} 
+                    className="border p-2"
+                />
+                {/* <input 
+                    type="text" 
+                    placeholder="Filter by Product Name" 
+                    value={productNameFilter} 
+                    onChange={(e) => setProductNameFilter(e.target.value)} 
+                    className="border p-2"
+                /> */}
+                <select 
+                    value={statusFilter} 
+                    onChange={(e) => setStatusFilter(e.target.value)} 
+                    className="border p-2"
+                >
+                    <option value="">Filter by Status</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Return Accepted">Return Accepted</option>
+                    <option value="Cancel Order">Cancel Order</option>
+                    <option value="Confirmed">Confirmed</option>
+
+
+                </select>
+            </div>
 
                 {/* table  */}
                 <div className="w-full overflow-x-auto">
@@ -107,10 +164,7 @@ const OrderDetail = () => {
                                     Date
                                 </th>
 
-                                <th scope="col"
-                                    className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
-                                    Action
-                                </th>
+                               
                                 
                                 <th scope="col"
                                     className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
@@ -120,13 +174,13 @@ const OrderDetail = () => {
 
                                 <th scope="col"
                                     className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">
-                                   Status change button
+                                    Action
                                 </th>
  
 
 
                             </tr>
-                            {getAllOrder.map((order,orderIndex) => {
+                            {filteredOrders.map((order,orderIndex) => {
                                 console.log(order)
                                 return (
                                     <>
@@ -194,9 +248,9 @@ const OrderDetail = () => {
                                                         {order.date}
                                                     </td>
 
-                                                    <td onClick={()=> orderDelete(order.id)} className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500  text-red-500 cursor-pointer ">
+                                                    {/* <td onClick={()=> orderDelete(order.id)} className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500  text-red-500 cursor-pointer ">
                                                         Delete
-                                                    </td>
+                                                    </td> */}
                                                     <td>
                                                         {/* Dropdown menu for selecting status */}
                                                         <select
@@ -208,6 +262,7 @@ const OrderDetail = () => {
                                                             <option value="Delivered">Delivered</option>
                                                             <option value="Return Accepted">Return Accepted</option>
                                                             <option value="Cancel Order">Cancel Order</option>
+                                                            {/* <option value="Confirmed">"Confirmed"</option> */}
                                                         </select>
                                                     </td>
                                                     <td>

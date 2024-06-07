@@ -1,9 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import myContext from "../../context/myContext";
 import toast from "react-hot-toast";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth, fireDB } from "../../firebase/FirebaseConfig";
 import Loader from "../../components/loader/Loader";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
@@ -15,11 +14,15 @@ const Login = () => {
     // navigate 
     const navigate = useNavigate();
 
-    // User Signup State 
+    // User Login State 
     const [userLogin, setUserLogin] = useState({
         email: "",
         password: ""
     });
+
+    // Forgot Password State
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
 
     /**========================================================================
      *                          User Login Function 
@@ -34,7 +37,6 @@ const Login = () => {
         setLoading(true);
         try {
             const users = await signInWithEmailAndPassword(auth, userLogin.email, userLogin.password);
-            // console.log(users.user)
 
             try {
                 const q = query(
@@ -69,21 +71,33 @@ const Login = () => {
         }
 
     }
+
+    // Forgot Password Function
+    const forgotPassword = async () => {
+        try {
+            await sendPasswordResetEmail(auth, forgotPasswordEmail);
+            toast.success("Password reset email sent. Please check your inbox.");
+        } catch (error) {
+            console.error("Error sending password reset email:", error);
+            toast.error("Failed to send password reset email.");
+        }
+    }
+
     return (
-        <div className='flex justify-center items-center h-screen bg-slate-200'>
+        <div className='flex justify-center items-center h-screen bg-gradient-to-l from-[#58e2ec] to-pink-200'>
             {loading && <Loader />}
             {/* Login Form  */}
-            <div className="login_Form bg-pink-50 px-8 py-6 border border-pink-100 rounded-xl shadow-md">
+            <div className="login_Form bg-pink-50 px-8 py-6 border  border-pink-100 rounded-xl shadow-md">
 
                 {/* Top Heading  */}
-                <div className="mb-5">
+                <div className="mb-8">
                     <h2 className='text-center text-2xl font-bold text-pink-500 '>
                         Login
                     </h2>
                 </div>
 
-                {/* Input One  */}
-                <div className="mb-3">
+                {/* Email Input */}
+                <div className="mb-5">
                     <input
                         type="email"
                         name="email"
@@ -99,7 +113,7 @@ const Login = () => {
                     />
                 </div>
 
-                {/* Input Two  */}
+                {/* Password Input */}
                 <div className="mb-5">
                     <input
                         type="password"
@@ -115,17 +129,53 @@ const Login = () => {
                     />
                 </div>
 
-                {/* Signup Button  */}
+                {/* Login Button */}
                 <div className="mb-5">
                     <button
                         type='button'
                         onClick={userLoginFunction}
-                        className='bg-pink-500 hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
+                        className='bg-[#091434] hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
                     >
                         Login
                     </button>
                 </div>
 
+                {/* Forgot Password Link */}
+                <div>
+                    <h2 className='text-black cursor-pointer' onClick={() => setShowForgotPassword(true)}>Forgot your password?</h2>
+                </div>
+
+                {/* Modal for Forgot Password */}
+                {showForgotPassword && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <h2 className="text-center text-xl font-bold mb-4">Forgot Password</h2>
+                            <input
+                                type="email"
+                                placeholder='Enter your email'
+                                value={forgotPasswordEmail}
+                                onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                                className='bg-pink-50 border border-pink-200 px-2 py-2 w-full rounded-md outline-none placeholder-pink-200 mb-2'
+                            />
+                            <button
+                                type='button'
+                                onClick={forgotPassword}
+                                className='bg-[#091434] hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
+                            >
+                                Reset Password
+                            </button>
+                            <button
+                                type='button'
+                                onClick={() => setShowForgotPassword(false)}
+                                className='mt-2 text-pink-500 hover:underline text-sm cursor-pointer'
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Signup Link */}
                 <div>
                     <h2 className='text-black'>Don't Have an account <Link className=' text-pink-500 font-bold' to={'/signup'}>Signup</Link></h2>
                 </div>
@@ -136,4 +186,3 @@ const Login = () => {
 }
 
 export default Login;
-

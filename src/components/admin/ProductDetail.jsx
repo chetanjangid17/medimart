@@ -31,10 +31,10 @@ const ProductDetail = () => {
 
     return (
         <div>
-            <div className="py-5 flex justify-between items-center">
-                <div>
+            <div className="py-5 ">
+                <div className="text-center">
                     <h1 className="text-xl text-pink-300 font-bold">All Products</h1>
-                    <p className="text-sm text-gray-500">Total Products: {productCount}</p>
+                    <p className="text-lg text-red-500">Total Products: {productCount}</p>
                 </div>
                 <Link to={'/addproduct'}>
                     <button className="px-5 py-2 bg-pink-50 border border-pink-100 rounded-lg">Add Product</button>
@@ -57,6 +57,7 @@ const ProductDetail = () => {
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Date</th>
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Inventory</th>
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Action</th>
+                            <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Delete Product</th>
                         </tr>
                         {getAllProduct.map((item, index) => {
                             const { id, title, price, category, date, productImageUrl, quantity } = item;

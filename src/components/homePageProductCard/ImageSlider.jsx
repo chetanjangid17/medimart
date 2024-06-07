@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './ImageSlider.css';
 
-const ImageSlider = ({ items }) => {
+const ImageSlider = ({ items ,im}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -14,13 +14,16 @@ const ImageSlider = ({ items }) => {
   }, [items.length]);
 
   return (
-    <div className="mt-4 h-[410px] w-full overflow-hidden">
-      <div className="h-[100%] w-full flex ">
+    <div className=" w-full overflow-hidden ">
+      <div className="h-[40vh] w-full flex  ">
         {items.map((image, index) => (
-          <div key={index} className="slide w-full" style={{ marginLeft: `${index === 0 ? -currentIndex * 100 : 0}%` }}>
+          <div key={index} className="slide w-full " style={{ marginLeft: `${index === 0 ? -currentIndex * 100 : 0}%` }}>
           
-            <img className="small-image w-screen  h-[100%] object-center" src={image} alt={`Image ${index + 1}`} />
+            <img className="small-image w-screen  object-center" src={image}  />
+            <img className="small-image w-screen   object-center"  src={im} />
           </div>
+          
+
         ))}
       </div>
     </div>

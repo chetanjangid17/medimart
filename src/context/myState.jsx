@@ -19,6 +19,31 @@ function MyState({ children }) {
      *                          GET All Product Function
      *========================================================================**/
 
+       // Function to fetch orders based on a date range
+       const getOrdersByDateRange = async (startDate, endDate) => {
+        setLoading(true);
+        try {
+            const q = query(
+                collection(fireDB, "order"),
+                where('date', '>=', startDate),
+                where('date', '<=', endDate),
+                orderBy('date')
+            );
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const orderArray = [];
+                querySnapshot.forEach((doc) => {
+                    orderArray.push({ ...doc.data(), id: doc.id });
+                });
+                setGetAllOrder(orderArray);
+                setLoading(false);
+            });
+            return () => unsubscribe();
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
     const getAllProductFunction = async () => {
         setLoading(true);
         try {
@@ -201,10 +226,12 @@ function MyState({ children }) {
         getAllProductFunctio();
         getAllOrderFunction();
         getAllUserFunction();
+        
     }, []);
 
     return (
         <MyContext.Provider value={{
+            getOrdersByDateRange,
             loading,
             setLoading,
             getAllProduct,

@@ -117,7 +117,7 @@ const Signup = () => {
     }
 
     return (
-        <div className='flex justify-center items-center h-screen  bg-slate-200'>
+        <div className='flex justify-center items-center h-screen bg-gradient-to-r from-[#58e2ec] to-pink-200'>
             {loading && <Loader />}
             {/* Signup Form  */}
             <div className="signup_Form bg-pink-50 px-8 py-6 border border-pink-100 rounded-xl shadow-md">
@@ -198,7 +198,7 @@ const Signup = () => {
                     <button
                         type='button'
                         onClick={userSignupFunction}
-                        className='bg-pink-500 hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
+                        className='bg-[#091434] hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
                     >
                         Signup
                     </button>

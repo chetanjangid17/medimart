@@ -6,11 +6,13 @@ import UserDetail from '../../components/admin/UserDetail';
 import { useContext } from 'react';
 import myContext from '../../context/myContext';
 import Navbar from '../../components/navbar/Navbar';
+import SalesReport from '../../components/admin/SalesReport';
+import MonthlySalesReport from '../../components/admin/MonthlySalesReport';
 
 const AdminDashboard = () => {
     const user = JSON.parse(localStorage.getItem('users'));
     const context = useContext(myContext);
-    const {getAllProduct, getAllOrder, getAllUser} = context;
+    const {getAllProduct, getAllOrder, getAllUser,getOrdersByDateRange} = context;
     return (
         <div>
             <Navbar/>
@@ -93,8 +95,8 @@ const AdminDashboard = () => {
                                     <p className=" text-[#091434]  font-bold" >Total Products</p>
                                 </div>
                             </Tab>
-
                             {/* Total Order  */}
+                            
                             <Tab className="p-4 md:w-1/4 sm:w-1/2 w-full cursor-pointer">
                                 <div className=" border bg-[#E2F2F2] hover:bg-pink-100 border-pink-100 px-4 py-3 rounded-xl" >
                                     <div className="text-[#091434] w-12 h-12 mb-3 inline-block" >
@@ -150,18 +152,45 @@ const AdminDashboard = () => {
                                     <p className=" text-[#091434]  font-bold" >Total User</p>
                                 </div>
                             </Tab>
+                             {/* Sales   */}
+                             <Tab className="p-4 md:w-1/4 sm:w-1/2 w-full cursor-pointer">
+                                <div className=" border bg-[#E2F2F2] hover:bg-pink-100 border-pink-100 px-4 py-3 rounded-xl" >
+                                    <div className="text-[#091434] w-12 h-12 mb-3 inline-block" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={50}
+                                            height={50} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-indian-rupee"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="m13 17-5-1h1a4 4 0 0 0 0-8"/></svg>
+                                    </div>
+                                    <h2 className="title-font font-medium text-3xl text-[#091434] fonts1" >{getAllOrder.length}</h2>
+                                    <p className=" text-[#091434]  font-bold" >Sales</p>
+                                </div>
+                            </Tab>
+                            <Tab className="p-4 md:w-1/4 sm:w-1/2 w-full cursor-pointer">
+                                <div className=" border bg-[#E2F2F2] hover:bg-pink-100 border-pink-100 px-4 py-3 rounded-xl" >
+                                    <div className="text-[#091434] w-12 h-12 mb-3 inline-block" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={50}
+                                            height={50} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-search"><path d="M21 12V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><circle cx="18" cy="18" r="3"/><path d="m22 22-1.5-1.5"/></svg>
+                                        </div>
+                                    <h2 className="title-font font-medium text-3xl text-[#091434] fonts1" >{getOrdersByDateRange.length}</h2>
+                                    <p className=" text-[#091434]  font-bold" >Monthly</p>
+                                </div>
+                            </Tab>
                         </TabList>
 
                         <TabPanel>
                             <ProductDetail />
                         </TabPanel>
-
+                                              
                         <TabPanel>
                             <OrderDetail/>
                         </TabPanel>
 
                         <TabPanel>
                            <UserDetail/>
+                        </TabPanel>
+                        <TabPanel>
+                        <SalesReport/>
+                        </TabPanel>
+                        <TabPanel>
+                        <MonthlySalesReport/>
                         </TabPanel>
                     </Tabs>
                 </div>

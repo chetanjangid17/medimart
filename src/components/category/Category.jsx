@@ -38,7 +38,7 @@ const Category = () => {
     // naviaget 
     const navigate = useNavigate();
     return (
-        <div className=" rounded-b-3xl md:rounded-none pb-5 bg-slate-300">
+        <div className="   pb-5 bg-gradient-to-l to-pink-200 from-[#3B4A61] ">
             {/* main container */}
             <div className="grid grid-cols-4 md:flex lg:flex-row justify-center items-center gap-4 overflow-x-auto hide-scroll-bar">
                 {/* category container */}

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../components/layout/Layout";
-import { Trash } from 'lucide-react'
+import { Trash } from 'lucide-react';
 import { decrementQuantity, deleteFromCart, incrementQuantity } from "../../redux/cartSlice";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
@@ -15,31 +15,44 @@ const CartPage = () => {
 
     const deleteCart = (item) => {
         dispatch(deleteFromCart(item));
-        toast.success("Delete cart")
-    }
+        toast.success("Delete cart");
+    };
 
     const handleIncrement = (id) => {
-        dispatch(incrementQuantity(id));
+        const item = cartItems.find(item => item.id === id);
+        if (item.quantity < 7) {
+            dispatch(incrementQuantity(id));
+        } else {
+            toast.error("Maximum quantity limit reached ");
+        }
     };
 
     const handleDecrement = (id) => {
-        dispatch(decrementQuantity(id));
+        const item = cartItems.find(item => item.id === id);
+        if (item.quantity > 1) {
+            dispatch(decrementQuantity(id));
+        } else {
+            toast.error("Minimum quantity limit reached ");
+        }
     };
-
-    // const cartQuantity = cartItems.length;
 
     const cartItemTotal = cartItems.map(item => item.quantity).reduce((prevValue, currValue) => prevValue + currValue, 0);
 
     const cartTotal = cartItems.map(item => item.price * item.quantity).reduce((prevValue, currValue) => prevValue + currValue, 0);
 
+    // Calculate delivery charge based on the cart total
+    const deliveryCharge = cartTotal < 500 ? 50 : 0;
+
+    // Calculate total amount including delivery charge
+    const totalAmount = cartTotal + deliveryCharge;
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems])
+    }, [cartItems]);
 
-    // user
-    const user = JSON.parse(localStorage.getItem('users'))
-    
+    // User
+    const user = JSON.parse(localStorage.getItem('users'));
+
     const [addressInfo, setAddressInfo] = useState({
         name: "",
         address: "",
@@ -47,11 +60,11 @@ const CartPage = () => {
         mobileNumber: "",
         time: Timestamp.now(),
         date: new Date().toLocaleString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
         }),
-      });
+    });
 
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
@@ -59,88 +72,124 @@ const CartPage = () => {
     const [mobileNumber, setmobileNumber] = useState("");
 
     const buyNow = async () => {
-        // validation
-        if (name === "" || address == "" || pincode == "" || mobileNumber == "") {
-          return toast.error("All fields are required", {
-            position: "top-center",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
+        // Mobile number validation
+        const mobilePattern = /^[6-9]\d{9}$/;
+        if (!mobilePattern.test(mobileNumber)) {
+            return toast.error("Please enter a valid mobile number starting with 6, 7, 8, or 9", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
         }
+
+        // Other validations and payment processing
+        if (name === "" || address === "" || pincode === "" || mobileNumber === "") {
+            return toast.error("All fields are required", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
+
+        // Name limit validation
+        if (name.split(" ").length > 20) {
+            return toast.error("Name should not exceed 20 words", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
+
+        // Pin code limit validation
+        if (pincode.length !== 6) {
+            return toast.error("Pin code should be 6 characters long", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
+
         const addressInfo = {
-          name,
-          address,
-          pincode,
-          mobileNumber,
-          date: new Date().toLocaleString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }),
+            name,
+            address,
+            pincode,
+            mobileNumber,
+            date: new Date().toLocaleString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+            }),
         };
 
-
         var options = {
-            key: "rzp_test_U8A2AwRRntEltL", // Replace with your actual Razorpay key ID
-            key_secret: "sbLh8hGAcG7pavdBLp2qHwBG", // Replace with your actual Razorpay key secret
-          amount: parseInt(cartTotal * 100),
-          currency: "INR",
-          order_receipt: "order_rcptid_" + name,
-          name: "MediMart",
-          description: "for testing purpose",
-          handler: function (response) {
-            // console.log(response)
-            toast.success("Payment Successful");
-    
-            const paymentId = response.razorpay_payment_id;
-        // Order Info 
-        const orderInfo = {
-            cartItems,
-            addressInfo,
-            email: user.email,
-            userid: user.uid,
-            status: "confirmed",
-            time: Timestamp.now(),
-            date: new Date().toLocaleString(
-                "en-US",
-                {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
+            key: "rzp_test_gOPhnpDC96Mue9",
+            key_secret: "KjkPiRk4aGEFDAcuLRh0AnMn",
+            amount: parseInt(totalAmount * 100),
+            currency: "INR",
+            order_receipt: "order_rcptid_" + name,
+            name: "MediMart",
+            description: "for testing purpose",
+            handler: function (response) {
+                // Payment success handling
+                toast.success("Payment Successful");
+                const paymentId = response.razorpay_payment_id;
+                const orderInfo = {
+                    cartItems,
+                    addressInfo,
+                    email: user.email,
+                    userid: user.uid,
+                    status: "Confirmed",
+                    time: Timestamp.now(),
+                    date: new Date().toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                    }),
+                    paymentId,
+                };
+                try {
+                    const orderRef = collection(fireDB, 'order');
+                    addDoc(orderRef, orderInfo);
+                    setAddressInfo({
+                        name: "",
+                        address: "",
+                        pincode: "",
+                        mobileNumber: "",
+                    });
+                    toast.success("Order Placed Successfully");
+                } catch (error) {
+                    console.log(error);
                 }
-            ),
-           
-            paymentId,
-        }
-        try {
-            const orderRef = collection(fireDB, 'order');
-            addDoc(orderRef, orderInfo);
-            setAddressInfo({
-                name: "",
-                address: "",
-                pincode: "",
-                mobileNumber: "",
-            })
-            toast.success("Order Placed Successfull")
-        } catch (error) {
-            console.log(error);
-          }
-        },
-  
-        theme: {
-          color: "#3399cc",
-        },
-      };
-      var pay = new window.Razorpay(options);
-      pay.open();
-      console.log(pay);
+            },
+            theme: {
+                color: "#3399cc",
+            },
+        };
+        var pay = new window.Razorpay(options);
+        pay.open();
+        console.log(pay);
     };
-  
+
     return (
         <Layout>
             <div className="container mx-auto px-4 max-w-7xl lg:px-0">
@@ -158,10 +207,10 @@ const CartPage = () => {
 
                                     <>
                                         {cartItems.map((item, index) => {
-                                            const { id, title, price, productImageUrl, quantity, category } = item
+                                            const { id, title, price, productImageUrl, quantity, category } = item;
                                             return (
                                                 <div key={index} className="">
-                                                    <li className="flex py-6 sm:py-6 ">
+                                                    <li className="flex py-6 sm:py-6">
                                                         <div className="flex-shrink-0">
                                                             <img
                                                                 src={productImageUrl}
@@ -169,7 +218,6 @@ const CartPage = () => {
                                                                 className="sm:h-38 sm:w-38 h-24 w-24 rounded-md object-contain object-center"
                                                             />
                                                         </div>
-
                                                         <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
                                                             <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
                                                                 <div>
@@ -194,13 +242,14 @@ const CartPage = () => {
                                                     </li>
                                                     <div className="mb-2 flex">
                                                         <div className="min-w-24 flex">
-                                                            <button onClick={() => handleDecrement(id)} type="button" className="h-7 w-7" >
+                                                            <button onClick={() => handleDecrement(id)} type="button" className="h-7 w-7">
                                                                 -
                                                             </button>
                                                             <input
                                                                 type="text"
                                                                 className="mx-1 h-7 w-9 rounded-md border text-center"
                                                                 value={quantity}
+                                                                readOnly
                                                             />
                                                             <button onClick={() => handleIncrement(id)} type="button" className="flex h-7 w-7 items-center justify-center">
                                                                 +
@@ -214,12 +263,20 @@ const CartPage = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            )
+                                            );
                                         })}
                                     </>
                                     :
 
-                                    <h1>Not Found</h1>}
+                                    <div className="text-center">
+                                        <h1 className="text-xl  font-semibold">Your Cart is empty</h1>
+                                        <img
+                                            src="https://supershopping.lk/images/home/Cart-empty.gif"
+                                            alt="Empty cart"
+                                            className="mx-auto mt-4"
+                                        />
+                                    </div>
+                                }
                             </ul>
                         </section>
                         {/* Order summary */}
@@ -234,7 +291,7 @@ const CartPage = () => {
                                 Price Details
                             </h2>
                             <div>
-                                <dl className=" space-y-1 px-2 py-4">
+                                <dl className="space-y-1 px-2 py-4">
                                     <div className="flex items-center justify-between">
                                         <dt className="text-sm text-gray-800">Price ({cartItemTotal} item)</dt>
                                         <dd className="text-sm font-medium text-gray-900">₹ {cartTotal}</dd>
@@ -243,31 +300,33 @@ const CartPage = () => {
                                         <dt className="flex text-sm text-gray-800">
                                             <span>Delivery Charges</span>
                                         </dt>
-                                        <dd className="text-sm font-medium text-green-700">Free</dd>
+                                        <dd className="text-sm font-medium text-gray-900">
+                                            ₹ {deliveryCharge > 0 ? deliveryCharge : 'Free'}
+                                        </dd>
                                     </div>
-                                    <div className="flex items-center justify-between border-y border-dashed py-4 ">
+                                    <div className="flex items-center justify-between border-y border-dashed py-4">
                                         <dt className="text-base font-medium text-gray-900">Total Amount</dt>
-                                        <dd className="text-base font-medium text-gray-900">₹ {cartTotal}</dd>
+                                        <dd className="text-base font-medium text-gray-900">₹ {totalAmount}</dd>
                                     </div>
                                 </dl>
                                 <div className="px-2 pb-4 font-medium text-green-700">
-                                <div className="flex gap-4 mb-6">
-                    {user ? (
-                      <Modal
-                        name={name}
-                        address={address}
-                        pincode={pincode}
-                        mobileNumber={mobileNumber}
-                        setName={setName}
-                        setAddress={setAddress}
-                        setPincode={setPincode}
-                        setmobileNumber={setmobileNumber}
-                        buyNow={buyNow}
-                      />
-                    ) : (
-                      <Navigate to={"/login"} />
-                    )}
-                  </div>
+                                    <div className="flex gap-4 mb-6">
+                                        {user ? (
+                                            <Modal
+                                                name={name}
+                                                address={address}
+                                                pincode={pincode}
+                                                mobileNumber={mobileNumber}
+                                                setName={setName}
+                                                setAddress={setAddress}
+                                                setPincode={setPincode}
+                                                setmobileNumber={setmobileNumber}
+                                                buyNow={buyNow}
+                                            />
+                                        ) : (
+                                            <Navigate to={"/login"} />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -276,8 +335,6 @@ const CartPage = () => {
             </div>
         </Layout>
     );
-}
+};
 
 export default CartPage;
-
-
